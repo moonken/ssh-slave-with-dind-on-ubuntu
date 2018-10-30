@@ -48,4 +48,6 @@ RUN usermod -aG docker jenkins
 # Define additional metadata for our image.
 VOLUME /var/lib/docker
 
+RUN apt-get install -y openjdk-8-jdk
+
 ENTRYPOINT ["setup-sshd"]
