@@ -36,7 +36,7 @@ RUN apt-get update -qq && apt-get install -qqy \
     curl \
     lxc \
     iptables
-    
+
 # Install Docker from Docker Inc. repositories.
 RUN curl -sSL https://get.docker.com/ | sh
 
@@ -49,5 +49,11 @@ RUN usermod -aG docker jenkins
 VOLUME /var/lib/docker
 
 RUN apt-get install -y openjdk-8-jdk
+RUN apt-get install -y git
+
+RUN apt-get update && apt-get install -y apt-transport-https
+RUN curl -s https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
+RUN echo "deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+RUN apt-get update && apt-get install -y kubelet kubeadm kubectl
 
 ENTRYPOINT ["setup-sshd"]
