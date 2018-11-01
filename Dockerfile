@@ -56,5 +56,6 @@ RUN curl -s https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key 
 RUN echo "deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
 RUN apt-get update && apt-get install -y kubelet kubeadm kubectl
 RUN apt-get install -y awscli
+RUN apt-get install -y jq
 
 ENTRYPOINT ["setup-sshd"]
