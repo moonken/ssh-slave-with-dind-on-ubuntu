@@ -82,4 +82,5 @@ ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 RUN apt-get update -y || true
 RUN apt-get install -y python-minimal
 USER jenkins
+RUN npm install yarn -g
 ENTRYPOINT ["sh", "-c", "sudo setup-sshd"]
