@@ -75,12 +75,16 @@ RUN curl https://raw.githubusercontent.com/creationix/nvm/v$NVM_VERSION/install.
     && nvm install $NODE_VERSION \
     && nvm alias default $NODE_VERSION \
     && nvm use default
-RUN chmod -R 777 /usr/local/nvm
 
 ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 RUN apt-get update -y || true
 RUN apt-get install -y python-minimal
+RUN apt-get install -y build-essential
+COPY ./node-v${NODE_VERSION}-headers.tar.gz $NVM_DIR/node-v${NODE_VERSION}-headers.tar.gz
+RUN chmod -R 777 /usr/local/nvm
+
 USER jenkins
 RUN npm install yarn -g
-ENTRYPOINT ["sh", "-c", "sudo setup-sshd"]
+RUN npm install node-gyp -g
+ENTRYPOINT ["sh", "-c", "node-gyp install --tarball $NVM_DIR/node-v${NODE_VERSION}-headers.tar.gz && sudo setup-sshd"]
