@@ -25,8 +25,6 @@ RUN sed -i /etc/ssh/sshd_config \
 VOLUME "${JENKINS_AGENT_HOME}" "/tmp" "/run" "/var/run"
 WORKDIR "${JENKINS_AGENT_HOME}"
 
-COPY setup-sshd /usr/local/bin/setup-sshd
-
 EXPOSE 22
 
 # Let's start with some basic stuff.
@@ -39,10 +37,9 @@ RUN apt-get update -qq && apt-get install -qqy \
 
 RUN apt-get install -y openjdk-8-jdk
 RUN apt-get install -y git
-RUN apt-get install -y apt-utils
 
 # Install Docker from Docker Inc. repositories.
-RUN curl -sSL https://get.docker.com/ | sh
+RUN curl -sSL https://get.docker.com/ | sh -s docker --mirror Aliyun
 
 # Install the magic wrapper.
 ADD ./wrapdocker /usr/local/bin/wrapdocker
@@ -84,7 +81,9 @@ RUN apt-get install -y build-essential
 COPY ./node-v${NODE_VERSION}-headers.tar.gz $NVM_DIR/node-v${NODE_VERSION}-headers.tar.gz
 RUN chmod -R 777 /usr/local/nvm
 
+COPY setup-sshd /usr/local/bin/setup-sshd
+
 USER jenkins
 RUN npm install yarn -g
 RUN npm install node-gyp -g
-ENTRYPOINT ["sh", "-c", "node-gyp install --tarball $NVM_DIR/node-v${NODE_VERSION}-headers.tar.gz && sudo setup-sshd"]
+ENTRYPOINT ["setup-sshd"]
